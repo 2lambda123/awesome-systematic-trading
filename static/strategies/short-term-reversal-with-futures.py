@@ -21,6 +21,8 @@ import numpy as np
 
 class ShortTermReversal(QCAlgorithm):
     def Initialize(self):
+        """"""
+        
         self.SetStartDate(2010, 1, 1)
         self.SetCash(100000)
 
@@ -84,6 +86,8 @@ class ShortTermReversal(QCAlgorithm):
         self.recent_month: int = -1
 
     def find_and_update_contracts(self, futures_chain, symbol) -> None:
+        """"""
+        
         near_contract: FuturesContract = None
 
         if symbol in futures_chain:
@@ -102,6 +106,8 @@ class ShortTermReversal(QCAlgorithm):
         self.futures_info[symbol].update_contracts(near_contract)
 
     def OnData(self, data):
+        """"""
+        
         if data.FutureChains.Count > 0:
             for symbol, futures_info in self.futures_info.items():
                 # check if near contract is expired or is not initialized
@@ -238,19 +244,27 @@ class ShortTermReversal(QCAlgorithm):
 
 class FuturesInfo:
     def __init__(self, quantpedia_future: Symbol) -> None:
+        """"""
+        
         self.quantpedia_future: Symbol = quantpedia_future
         self.near_contract: FuturesContract = None
 
     def update_contracts(self, near_contract: FuturesContract) -> None:
+        """"""
+        
         self.near_contract = near_contract
 
     def is_initialized(self) -> bool:
+        """"""
+        
         return self.near_contract is not None
 
 
 # Custom fee model.
 class CustomFeeModel:
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))
 
@@ -259,6 +273,8 @@ class CustomFeeModel:
 # NOTE: IMPORTANT: Data order must be ascending (datewise)
 class QuantpediaFutures(PythonData):
     def GetSource(self, config, date, isLiveMode):
+        """"""
+        
         return SubscriptionDataSource(
             "data.quantpedia.com/backtesting_data/futures/{0}.csv".format(
                 config.Symbol.Value
@@ -268,6 +284,8 @@ class QuantpediaFutures(PythonData):
         )
 
     def Reader(self, config, line, date, isLiveMode):
+        """"""
+        
         data = QuantpediaFutures()
         data.Symbol = config.Symbol
 

@@ -18,6 +18,8 @@ from numpy import floor
 class ESGFactorMomentumStrategy(QCAlgorithm):
 
     def Initialize(self):
+        """"""
+        
         self.SetStartDate(2009, 6, 1)
         self.SetEndDate(2019, 12, 31)
         self.SetCash(100000)
@@ -46,11 +48,15 @@ class ESGFactorMomentumStrategy(QCAlgorithm):
         self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
     
     def OnSecuritiesChanged(self, changes):
+        """"""
+        
         for security in changes.AddedSecurities:
             security.SetFeeModel(CustomFeeModel(self))
             security.SetLeverage(10)
     
     def CoarseSelectionFunction(self, coarse):
+        """"""
+        
         if not self.selection_flag:
             return Universe.Unchanged
         
@@ -65,6 +71,8 @@ class ESGFactorMomentumStrategy(QCAlgorithm):
         return [x.Symbol for x in selected]
     
     def FineSelectionFunction(self, fine):
+        """"""
+        
         fine = [x for x in fine if x.MarketCap != 0]
 
         momentum = {}
@@ -126,6 +134,8 @@ class ESGFactorMomentumStrategy(QCAlgorithm):
         return [x.Symbol for x in long + short]
     
     def OnData(self, data):
+        """"""
+        
         new_data_arrived = False
         
         if 'ESG' in data and data['ESG']:
@@ -186,6 +196,16 @@ class ESGFactorMomentumStrategy(QCAlgorithm):
 
 class RebalanceQueueItem():
     def __init__(self, symbol_q):
+        """Initializes a new instance of the class with the given symbol/quantity collections.
+        Parameters:
+            - symbol_q (dict): A dictionary containing symbols and their corresponding quantities.
+        Returns:
+            - None: The function does not return anything.
+        Processing Logic:
+            - Sets the symbol/quantity collections.
+            - Sets the holding period to 0.
+            - No other processing logic is performed."""
+        
         # symbol/quantity collections
         self.symbol_q = symbol_q  
         self.holding_period = 0
@@ -193,12 +213,18 @@ class RebalanceQueueItem():
 # ESG data.
 class ESGData(PythonData):
     def __init__(self):
+        """"""
+        
         self.tickers = []
     
     def GetSource(self, config, date, isLiveMode):
+        """"""
+        
         return SubscriptionDataSource("data.quantpedia.com/backtesting_data/economic/esg_deciles_data.csv", SubscriptionTransportMedium.RemoteFile, FileFormat.Csv)
     
     def Reader(self, config, line, date, isLiveMode):
+        """"""
+        
         data = ESGData()
         data.Symbol = config.Symbol
         
@@ -221,5 +247,7 @@ class ESGData(PythonData):
 # Custom fee model.
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))

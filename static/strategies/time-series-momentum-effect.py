@@ -18,6 +18,8 @@ import pandas as pd
 
 class TimeSeriesMomentum(QCAlgorithm):
     def Initialize(self):
+        """"""
+        
         self.SetStartDate(2000, 1, 1)
         self.SetCash(10000000)
 
@@ -108,6 +110,8 @@ class TimeSeriesMomentum(QCAlgorithm):
         self.recent_month = -1
 
     def OnData(self, data):
+        """"""
+        
         # Store daily data.
         for symbol in self.symbols:
             if symbol in data and data[symbol]:
@@ -205,6 +209,8 @@ class TimeSeriesMomentum(QCAlgorithm):
 # NOTE: IMPORTANT: Data order must be ascending (datewise)
 class QuantpediaFutures(PythonData):
     def GetSource(self, config, date, isLiveMode):
+        """"""
+        
         return SubscriptionDataSource(
             "data.quantpedia.com/backtesting_data/futures/{0}.csv".format(
                 config.Symbol.Value
@@ -214,6 +220,8 @@ class QuantpediaFutures(PythonData):
         )
 
     def Reader(self, config, line, date, isLiveMode):
+        """"""
+        
         data = QuantpediaFutures()
         data.Symbol = config.Symbol
 
@@ -232,5 +240,7 @@ class QuantpediaFutures(PythonData):
 # Custom fee model.
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))

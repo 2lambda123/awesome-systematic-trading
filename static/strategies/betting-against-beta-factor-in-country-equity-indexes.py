@@ -14,6 +14,8 @@ from collections import deque
 class BettingAgainstBetaFactorinInternationalEquities(QCAlgorithm):
 
     def Initialize(self):
+        """"""
+        
         self.SetStartDate(2002, 2, 1)
         self.SetCash(100000)
 
@@ -61,6 +63,8 @@ class BettingAgainstBetaFactorinInternationalEquities(QCAlgorithm):
         self.recent_month = -1
 
     def OnData(self, data):
+        """"""
+        
         for symbol in self.data:
             symbol_obj = self.Symbol(symbol)
             if symbol_obj in data.Keys:
@@ -132,5 +136,7 @@ class BettingAgainstBetaFactorinInternationalEquities(QCAlgorithm):
 # Custom fee model.
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))

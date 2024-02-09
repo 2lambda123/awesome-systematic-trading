@@ -18,6 +18,20 @@ from AlgorithmImports import *
 class Weeks52HighEffectinStocks(QCAlgorithm):
 
     def Initialize(self):
+        """Initializes the algorithm by setting the start date and cash amount. Sets a security initializer to update market prices. Sets a period of 12 months. Sets a holding period of 3 days and creates a managed queue. Stores daily high data. Adds the SPY equity with daily resolution. Sets a coarse count of 500 and a selection flag to False. Sets the universe resolution to daily and adds a universe using the coarse and fine selection functions. Schedules a selection function to run on the last trading day of each month.
+        Parameters:
+            - self (object): The algorithm object.
+        Returns:
+            - None: This function does not return any value.
+        Processing Logic:
+            - Sets start date and cash amount.
+            - Sets security initializer.
+            - Sets period and holding period.
+            - Adds SPY equity and stores daily high data.
+            - Sets coarse count and selection flag.
+            - Sets universe resolution and adds universe.
+            - Schedules selection function."""
+        
         self.SetStartDate(2000, 1, 1)
         self.SetCash(100000)
 
@@ -41,11 +55,29 @@ class Weeks52HighEffectinStocks(QCAlgorithm):
         self.Schedule.On(self.DateRules.MonthEnd(self.symbol), self.TimeRules.AfterMarketOpen(self.symbol), self.Selection)
 
     def OnSecuritiesChanged(self, changes):
+        """"""
+        
         for security in changes.AddedSecurities:
             security.SetFeeModel(CustomFeeModel())
             security.SetLeverage(10)
             
     def CoarseSelectionFunction(self, coarse):
+        """This function performs a coarse selection of stocks based on fundamental data and market location. It updates a rolling window of daily prices for each stock and returns a list of selected stocks that are ready for further processing.
+        Parameters:
+            - self (object): The algorithm instance.
+            - coarse (list): A list of coarse fundamental data for all securities in the universe.
+        Returns:
+            - list: A list of selected symbols that are ready for further processing.
+        Processing Logic:
+            - Updates daily price rolling window for each stock.
+            - Performs coarse selection based on fundamental data and market location.
+            - Warms up price rolling windows for selected stocks.
+            - Checks if each selected stock has enough data for processing.
+            - Returns a list of selected stocks that are ready for further processing.
+        Example:
+            CoarseSelectionFunction(self, coarse)
+            # Returns ['AAPL', 'MSFT', 'AMZN']"""
+        
         # Update the rolling window every day.
         for stock in coarse:
             symbol = stock.Symbol
@@ -78,6 +110,8 @@ class Weeks52HighEffectinStocks(QCAlgorithm):
         return [x for x in selected if self.data[x].is_ready()]
 
     def FineSelectionFunction(self, fine):
+        """"""
+        
         fine = [x for x in fine if x.MarketCap != 0 and \
                 ((x.SecurityReference.ExchangeId == "NYS") or (x.SecurityReference.ExchangeId == "NAS") or (x.SecurityReference.ExchangeId == "ASE"))]
         
@@ -139,6 +173,8 @@ class Weeks52HighEffectinStocks(QCAlgorithm):
         return long + short
 
     def OnData(self, data):
+        """"""
+        
         if not self.selection_flag:
             return
         self.selection_flag = False
@@ -172,33 +208,49 @@ class Weeks52HighEffectinStocks(QCAlgorithm):
             self.managed_queue.remove(remove_item)
 
     def Selection(self):
+        """"""
+        
         self.selection_flag = True
 
 class RebalanceQueueItem():
     def __init__(self, symbol_q):
+        """"""
+        
         # symbol/quantity collections
         self.symbol_q = symbol_q  
         self.holding_period = 0
 
 class SymbolData():
     def __init__(self, symbol, period):
+        """"""
+        
         self.Symbol = symbol
         self.Price = RollingWindow[float](period)
     
     def update(self, value):
+        """"""
+        
         self.Price.Add(value)
     
     def is_ready(self):
+        """"""
+        
         return self.Price.IsReady
      
     def maximum(self):
+        """"""
+        
         return max(x for x in self.Price)
         
     def get_latest_price(self):
+        """"""
+        
         return [x for x in self.Price][0]
 
 # Custom fee model.
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))

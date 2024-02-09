@@ -17,6 +17,8 @@ from AlgorithmImports import *
 class EarningsAnnouncementPremium(QCAlgorithm):
 
     def Initialize(self):
+        """"""
+        
         self.SetStartDate(2000, 1, 1)
         self.SetCash(100000) 
 
@@ -40,11 +42,15 @@ class EarningsAnnouncementPremium(QCAlgorithm):
         self.Schedule.On(self.DateRules.MonthStart(self.symbol), self.TimeRules.AfterMarketOpen(self.symbol), self.Selection)
 
     def OnSecuritiesChanged(self, changes):
+        """"""
+        
         for security in changes.AddedSecurities:
             security.SetFeeModel(CustomFeeModel())
             security.SetLeverage(10)
             
     def CoarseSelectionFunction(self, coarse):
+        """"""
+        
         # Update the rolling window every day.
         for stock in coarse:
             symbol = stock.Symbol
@@ -78,6 +84,8 @@ class EarningsAnnouncementPremium(QCAlgorithm):
         return [x for x in selected if self.data[x].IsReady]
 
     def FineSelectionFunction(self, fine):
+        """"""
+        
         fine = [x for x in fine if x.MarketCap != 0 and \
                     ((x.SecurityReference.ExchangeId == "NYS") or (x.SecurityReference.ExchangeId == "NAS") or (x.SecurityReference.ExchangeId == "ASE"))]
                     
@@ -159,6 +167,8 @@ class EarningsAnnouncementPremium(QCAlgorithm):
         return [x[0] for x in self.weight.items()]
     
     def OnData(self, data):
+        """"""
+        
         if not self.selection_flag:
             return
         self.selection_flag = False
@@ -176,11 +186,24 @@ class EarningsAnnouncementPremium(QCAlgorithm):
         self.weight.clear()
         
     def Selection(self):
+        """"Sets the selection flag to True."
+        Parameters:
+            - self (object): The object that the function is being called on.
+        Returns:
+            - None: The function does not return any value.
+        Processing Logic:
+            - Sets the selection flag to True.
+            - Used to indicate that an item has been selected.
+            - Flag is used in other functions.
+            - Can be used to track user selections."""
+        
         self.selection_flag = True
 
 # Monthly volume data.
 class VolumeData():
     def __init__(self, date, monthly_volume, was_announcement_month):
+        """"""
+        
         self.Date = date
         self.Volume = monthly_volume
         self.WasAnnouncementMonth = was_announcement_month
@@ -188,5 +211,7 @@ class VolumeData():
 # Custom fee model
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))
