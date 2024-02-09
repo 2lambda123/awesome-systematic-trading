@@ -162,7 +162,7 @@ class TimeSeriesMomentum(QCAlgorithm):
         ls_leverage = []  # long and short leverage
 
         for sym_i, symbols in enumerate([long, short]):
-            total_volatility = sum([1 / performance_volatility[x][1] for x in symbols])
+            total_volatility = sum(1 / performance_volatility[x][1] for x in symbols)
 
             # Inverse volatility weighting.
             weights = np.array(

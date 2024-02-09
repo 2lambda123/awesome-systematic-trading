@@ -216,7 +216,7 @@ class ShortTermReversal(QCAlgorithm):
                     for symbol, ret_volume_oi in long + short:
                         diff[symbol] = ret_volume_oi[0] - avg_ret
 
-                    total_diff: float = sum([abs(x[1]) for x in diff.items()])
+                    total_diff: float = sum(abs(x[1]) for x in diff.items())
                     long_symbols: list[Symbol] = [x[0] for x in long]
 
                     if total_diff != 0:

@@ -99,7 +99,7 @@ class EarningsAnnouncementPremium(QCAlgorithm):
             if symbol not in self.monthly_volume:
                 self.monthly_volume[symbol] = deque(maxlen = self.month_period)
 
-            monthly_vol = sum([x for x in self.data[symbol]])
+            monthly_vol = sum(x for x in self.data[symbol])
             last_month_date = self.Time - timedelta(days = self.Time.day)
             last_file_date = stock.EarningReports.FileDate # stock annoucement day
             was_announcement_month = (last_file_date.year == last_month_date.year and last_file_date.month == last_month_date.month)    # Last month was announcement date.
@@ -113,7 +113,7 @@ class EarningsAnnouncementPremium(QCAlgorithm):
 
                 if len(announcement_volumes) == announcement_count:
                     announcement_months_volume = sum(announcement_volumes)
-                    total_volume = sum([x.Volume for x in self.monthly_volume[symbol]])
+                    total_volume = sum(x.Volume for x in self.monthly_volume[symbol])
                     
                     if announcement_months_volume != 0 and total_volume != 0:
                         # Store ratio, market cap pair.
@@ -148,11 +148,11 @@ class EarningsAnnouncementPremium(QCAlgorithm):
             del self.monthly_volume[symbol]
             
         # Market cap weighting.
-        total_market_cap_long = sum([x.MarketCap for x in long])
+        total_market_cap_long = sum(x.MarketCap for x in long)
         for stock in long:
             self.weight[symbol] = stock.MarketCap  / total_market_cap_long
         
-        total_market_cap_short = sum([x.MarketCap for x in short])
+        total_market_cap_short = sum(x.MarketCap for x in short)
         for stock in short:
             self.weight[symbol] = -stock.MarketCap  / total_market_cap_short
 
