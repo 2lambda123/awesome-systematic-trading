@@ -97,7 +97,7 @@ class CombiningSmartFactorsMomentumandMarketPortfolio(QCAlgorithm):
             total_weight = {}
 
             # weights
-            rank_sum = sum([x for x in range(1, len(slow_momentum) + 1)])
+            rank_sum = sum(x for x in range(1, len(slow_momentum) + 1))
             sorted_by_slow_momentum = sorted(
                 slow_momentum.items(), key=lambda x: abs(x[1]), reverse=False
             )

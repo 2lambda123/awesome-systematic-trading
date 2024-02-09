@@ -110,8 +110,8 @@ class BettingAgainstBetaFactorinInternationalEquities(QCAlgorithm):
             
             # self.Log(f"long: {long_leverage}; short: {short_leverage}")
             
-            total_long_diff = sum([x[1] for x in long_diff])
-            total_short_diff = sum([x[1] for x in short_diff])
+            total_long_diff = sum(x[1] for x in long_diff)
+            total_short_diff = sum(x[1] for x in short_diff)
             
             # Beta diff weighting.
             weight = {}

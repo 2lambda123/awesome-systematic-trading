@@ -105,9 +105,9 @@ class Weeks52HighEffectinStocks(QCAlgorithm):
             # Weighted average of ratios calc.
             industry_prilag_weighted_avg = {}
             for industry_code in group:
-                total_market_cap = sum([stock_prilag_data[0].MarketCap for stock_prilag_data in group[industry_code]])
+                total_market_cap = sum(stock_prilag_data[0].MarketCap for stock_prilag_data in group[industry_code])
                 if total_market_cap == 0: continue
-                industry_prilag_weighted_avg[industry_code] = sum([stock_prilag_data[1] * (stock_prilag_data[0].MarketCap / total_market_cap) for stock_prilag_data in group[industry_code]])
+                industry_prilag_weighted_avg[industry_code] = sum(stock_prilag_data[1] * (stock_prilag_data[0].MarketCap / total_market_cap) for stock_prilag_data in group[industry_code])
             
             if len(industry_prilag_weighted_avg) != 0:
                 # Weighted average industry sorting.
@@ -192,7 +192,7 @@ class SymbolData():
         return self.Price.IsReady
      
     def maximum(self):
-        return max([x for x in self.Price])
+        return max(x for x in self.Price)
         
     def get_latest_price(self):
         return [x for x in self.Price][0]

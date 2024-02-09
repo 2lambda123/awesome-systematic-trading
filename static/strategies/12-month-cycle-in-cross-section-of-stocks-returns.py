@@ -101,11 +101,11 @@ class Month12CycleinCrossSectionofStocksReturns(QCAlgorithm):
             long = [x for x in sorted_by_perf[:decile]]
             short = [x for x in sorted_by_perf[-decile:]]
         
-        total_market_cap_long = sum([x[1][1] for x in long])
+        total_market_cap_long = sum(x[1][1] for x in long)
         for symbol, perf_market_cap in long:
             self.weight[symbol] = perf_market_cap[1] / total_market_cap_long
 
-        total_market_cap_short = sum([x[1][1] for x in short])
+        total_market_cap_short = sum(x[1][1] for x in short)
         for symbol, perf_market_cap in short:
             self.weight[symbol] = perf_market_cap[1] / total_market_cap_short
         

@@ -111,13 +111,13 @@ class ESGFactorMomentumStrategy(QCAlgorithm):
         # vw
         else:
             if len(long) != 0:
-                total_market_cap_long = sum([x.MarketCap for x in long])
+                total_market_cap_long = sum(x.MarketCap for x in long)
                 long_w = self.Portfolio.TotalPortfolioValue / self.holding_period
                 long_symbol_q = [(x.Symbol, floor((long_w * (x.MarketCap / total_market_cap_long))) / self.latest_price[x.Symbol]) for x in long]
             
             short_symbol_q = []
             if len(short) != 0:
-                total_market_cap_short = sum([x.MarketCap for x in short])
+                total_market_cap_short = sum(x.MarketCap for x in short)
                 short_w = self.Portfolio.TotalPortfolioValue / self.holding_period
                 short_symbol_q = [(x.Symbol, -floor((short_w * (x.MarketCap / total_market_cap_short))) / self.latest_price[x.Symbol]) for x in short]
         
