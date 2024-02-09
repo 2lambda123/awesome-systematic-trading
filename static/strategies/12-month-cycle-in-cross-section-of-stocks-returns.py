@@ -13,6 +13,22 @@ from AlgorithmImports import *
 class Month12CycleinCrossSectionofStocksReturns(QCAlgorithm):
 
     def Initialize(self):
+        """"Initializes the algorithm by setting the start date and cash, adding an equity symbol, defining a coarse count, creating a dictionary for monthly close data, setting a period, creating a dictionary for weights, setting a selection flag, and adding a universe using coarse and fine selection functions. Also schedules a selection function to run before market close on the last trading day of each month for the added equity symbol."
+        Parameters:
+            - self (object): The algorithm object.
+        Returns:
+            - None: This function does not return any value.
+        Processing Logic:
+            - Sets start date and cash.
+            - Adds an equity symbol with daily resolution.
+            - Defines a coarse count of 500.
+            - Creates a dictionary for monthly close data.
+            - Sets a period of 13.
+            - Creates a dictionary for weights.
+            - Sets a selection flag to False.
+            - Adds a universe using coarse and fine selection functions.
+            - Schedules a selection function to run before market close on the last trading day of each month for the added equity symbol."""
+        
         self.SetStartDate(2000, 1, 1)  
         self.SetCash(100000)
 
@@ -33,11 +49,15 @@ class Month12CycleinCrossSectionofStocksReturns(QCAlgorithm):
         self.Schedule.On(self.DateRules.MonthEnd(self.symbol), self.TimeRules.BeforeMarketClose(self.symbol), self.Selection)
 
     def OnSecuritiesChanged(self, changes):
+        """"""
+        
         for security in changes.AddedSecurities:
             security.SetFeeModel(CustomFeeModel())
             security.SetLeverage(10)
             
     def CoarseSelectionFunction(self, coarse):
+        """"""
+        
         if not self.selection_flag:
             return Universe.Unchanged
 
@@ -81,6 +101,8 @@ class Month12CycleinCrossSectionofStocksReturns(QCAlgorithm):
         return [x for x in selected if self.data[x].is_ready()]    
         
     def FineSelectionFunction(self, fine):
+        """"""
+        
         fine = [x for x in fine if x.MarketCap != 0 and x.CompanyReference.IsREIT != 1 and  \
                     ((x.SecurityReference.ExchangeId == "NYS") or (x.SecurityReference.ExchangeId == "NAS") or (x.SecurityReference.ExchangeId == "ASE"))]
                     
@@ -112,6 +134,8 @@ class Month12CycleinCrossSectionofStocksReturns(QCAlgorithm):
         return [x[0] for x in self.weight.items()]
 
     def OnData(self, data):
+        """"""
+        
         if not self.selection_flag:
             return
         self.selection_flag = False
@@ -128,26 +152,56 @@ class Month12CycleinCrossSectionofStocksReturns(QCAlgorithm):
         self.weight.clear()
     
     def Selection(self):
+        """"""
+        
         self.selection_flag = True
 
 class SymbolData():
     def __init__(self, symbol, period):
+        """"""
+        
         self.Symbol = symbol
         self.Window = RollingWindow[float](period)
     
     def update(self, value):
+        """"""
+        
         self.Window.Add(value)
     
     def is_ready(self):
+        """()
+        "Checks if the window is ready for use."
+        Parameters:
+            - self (object): Instance of the class.
+        Returns:
+            - bool: True if the window is ready, False otherwise.
+        Processing Logic:
+            - Checks the status of the window.
+            - Returns True if the window is ready.
+            - Returns False if the window is not ready."""
+        
         return self.Window.IsReady
         
     # One month performance, one year ago.
     def performance(self):
+        """ * 100
+        Calculates the performance of a given window.
+        Parameters:
+            - self (object): The object containing the window.
+        Returns:
+            - float: The calculated performance value.
+        Processing Logic:
+            - Get the last two values from the window.
+            - Calculate the percentage change between the two values.
+            - Multiply by 100 to get the performance value."""
+        
         values = [x for x in self.Window]
         return (values[-2] / values[-1] - 1)
         
 # Custom fee model.
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))

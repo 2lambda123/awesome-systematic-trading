@@ -21,6 +21,8 @@ import numpy as np
 
 class CombiningSmartFactorsMomentumandMarketPortfolio(QCAlgorithm):
     def Initialize(self):
+        """"""
+        
         self.SetStartDate(2000, 1, 1)
         self.SetCash(100000)
 
@@ -64,11 +66,15 @@ class CombiningSmartFactorsMomentumandMarketPortfolio(QCAlgorithm):
         )
 
     def OnSecuritiesChanged(self, changes):
+        """"""
+        
         for security in changes.AddedSecurities:
             security.SetFeeModel(CustomFeeModel(self))
             security.SetLeverage(5)
 
     def OnData(self, data):
+        """"""
+        
         # store factor monthly prices
         for symbol, equity_symbol in self.symbols.items():
             if equity_symbol in data and data[equity_symbol]:
@@ -81,6 +87,8 @@ class CombiningSmartFactorsMomentumandMarketPortfolio(QCAlgorithm):
             self.data[self.market].Add(market_price)
 
     def Rebalance(self):
+        """"""
+        
         slow_momentum = {}
         fast_momentum = {}
 
@@ -185,6 +193,8 @@ class CombiningSmartFactorsMomentumandMarketPortfolio(QCAlgorithm):
 
 class USEquity(PythonData):
     def GetSource(self, config, date, isLiveMode):
+        """"""
+        
         return SubscriptionDataSource(
             "data.quantpedia.com/backtesting_data/equity/us_ew_decile/{0}.csv".format(
                 config.Symbol.Value
@@ -197,6 +207,8 @@ class USEquity(PythonData):
     # date;equity
     # 1992-01-31;0.98
     def Reader(self, config, line, date, isLiveMode):
+        """"""
+        
         data = USEquity()
         data.Symbol = config.Symbol
 
@@ -214,5 +226,7 @@ class USEquity(PythonData):
 # Custom fee model
 class CustomFeeModel(FeeModel):
     def GetOrderFee(self, parameters):
+        """"""
+        
         fee = parameters.Security.Price * parameters.Order.AbsoluteQuantity * 0.00005
         return OrderFee(CashAmount(fee, "USD"))
